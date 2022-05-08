@@ -1,0 +1,23 @@
+.card-list {
+	margin: 0;
+	padding: 36px;
+	list-style: none;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+@media (max-width: 1000px) {
+  .card-list {
+    justify-content: space-evenly;
+  }
+}
+
+@media (max-width: 420px) {
+  .card-list {
+    padding: 17px;
+    flex-direction: column;
+    flex-wrap: nowrap;
+  }
+}
