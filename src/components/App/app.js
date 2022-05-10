@@ -3,6 +3,7 @@ import React from 'react';
 import CardList from '../CardList';
 import Spinner from '../Spinner';
 import PageTabs from '../PageTabs';
+import Search from '../Search';
 import ApiService from '../../service/ApiService';
 
 import './app.css';
@@ -38,6 +39,7 @@ export default class App extends React.Component {
       <>
         <div className="wrapper">
           <PageTabs />
+          <Search />
           {spinner}
           {content}
         </div>

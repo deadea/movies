@@ -1,0 +1,15 @@
+form {
+  width: 100%;
+  padding: 10px 36px;
+}
+
+.ant-input {
+  line-height: 22px;
+  padding: 9px 12px;
+}
+
+@media (min-width: 420px) and (max-width: 767px) {
+  form {
+    padding: 10px 16px;
+  }
+}
