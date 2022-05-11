@@ -1,0 +1,15 @@
+.error-container {
+  height: 100vh;
+  margin-top: 20px;
+}
+.ant-alert {
+  width: 500px;
+  height: 100px;
+  border-radius: 10px;
+}
+.ant-alert-with-description .ant-alert-message {
+  font-size: 18px;
+}
+.ant-alert-description {
+  font-size: 16px;
+}

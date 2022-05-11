@@ -54,8 +54,8 @@
   display: block;
 }
 .card-item--genres {
-  margin-top: 7px;
-  margin-bottom: 7px;
+  margin-top: 5px;
+  margin-bottom: 5px;
 }
 .card-item--description {
   font-family: 'Inter';
@@ -99,6 +99,10 @@ p.card-item--description {
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
+  }
+  .card-item--genres {
+    margin-top: 4px;
+    margin-bottom: 4px;
   }
   .card-item--container {
     padding: 0;

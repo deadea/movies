@@ -8,14 +8,17 @@ export default class ApiService {
     );
 
     if (!res.ok) {
-      throw new Error(`No fetch, status: ${res.status}`);
+      throw new Error(res.status);
     }
-
-    return await res.json();
+    const result = await res.json();
+    if (result.total_results === 0) {
+      throw new Error('404');
+    }
+    return result;
   }
 
-  async getAllMovies() {
-    const res = await this.getResource('return');
+  async getAllMovies(query) {
+    const res = await this.getResource(query);
     return res.results;
   }
 }

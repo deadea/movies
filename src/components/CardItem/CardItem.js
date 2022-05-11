@@ -7,13 +7,24 @@ import './cardItem.css';
 import { format } from 'date-fns';
 import classNames from 'classnames';
 
+import icon from './no-image.png';
+
 export default class CardItem extends React.Component {
   formatDate() {
-    const date = format(new Date(this.props.release_date), 'MMMM dd, yyyy');
-    return date;
+    try {
+      const date = format(new Date(this.props.release_date), 'MMMM dd, yyyy');
+      return date;
+    } catch (err) {
+      if (err.name === 'RangeError') {
+        return 'No release date';
+      } else throw err;
+    }
   }
   getPoster() {
-    const url = `https://image.tmdb.org/t/p/w500${this.props.poster_path}`;
+    let url = `https://image.tmdb.org/t/p/w500${this.props.poster_path}`;
+    if (!this.props.poster_path) {
+      url = icon;
+    }
     return url;
   }
   textSlice(text) {
@@ -28,7 +39,7 @@ export default class CardItem extends React.Component {
   }
   render() {
     const { original_title: title, overview } = this.props;
-    const titleClassName = classNames('card-item--title', { long: title.length > 33 });
+    const titleClassName = classNames('card-item--title', { long: title.length > 30 });
     return (
       <li className="card-item">
         <img src={this.getPoster()} alt={'movie poster'}></img>
