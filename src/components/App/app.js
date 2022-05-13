@@ -17,10 +17,15 @@ export default class App extends React.Component {
     loading: true,
     error: false,
     errObject: {},
+    query: 'return',
   };
-  constructor() {
-    super();
-    this.getData();
+  componentDidMount() {
+    this.getData(this.state.query);
+  }
+  componentDidUpdate(prevProps, prevState) {
+    if (this.state.query !== prevState.query) {
+      this.getData(this.state.query);
+    }
   }
   onDataLoaded(data) {
     this.setState({
@@ -35,14 +40,20 @@ export default class App extends React.Component {
       errObject: err,
     });
   };
-  getData() {
+  getData(query) {
     this.apiService
-      .getAllMovies('return')
+      .getAllMovies(query)
       .then((result) => {
         this.onDataLoaded(result);
       })
       .catch(this.onError);
   }
+  updateQuery = (newQuery) => {
+    this.setState({
+      query: newQuery,
+      loading: true,
+    });
+  };
 
   render() {
     const { cards, loading, error, errObject } = this.state;
@@ -50,12 +61,11 @@ export default class App extends React.Component {
     const errorMessage = error ? <ErrorMessage errObject={errObject} /> : null;
     const spinner = loading ? <Spinner /> : null;
     const content = hasData ? <CardList cards={cards} /> : null;
-
     return (
       <>
         <div className="wrapper">
           <PageTabs />
-          <Search />
+          <Search updateQuery={this.updateQuery} />
           <NoConnection>
             {errorMessage}
             {spinner}

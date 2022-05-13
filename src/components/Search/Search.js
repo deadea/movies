@@ -1,29 +1,25 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Input } from 'antd';
+import debounce from 'lodash.debounce';
 import './search.css';
 
-export default class Search extends React.Component {
-  state = {
-    label: '',
+const Search = ({ updateQuery }) => {
+  const [searchTerm, setSearchTerm] = useState('');
+  const handleChange = (e) => {
+    if (e.target.value !== '') {
+      setSearchTerm(e.target.value);
+      updateQuery(e.target.value);
+      console.log('handleChange', e.target.value);
+    }
   };
-
-  onLabelChange = (e) => {
-    this.setState({
-      label: e.target.value,
-    });
-  };
-  onSubmit = (e) => {
+  const debouncedSearch = debounce(handleChange, 700);
+  const onSubmit = (e) => {
     e.preventDefault();
-    this.setState({
-      label: '',
-    });
   };
-
-  render() {
-    return (
-      <form onSubmit={this.onSubmit}>
-        <Input placeholder="Type to search..." onChange={this.onLabelChange} value={this.state.label} />
-      </form>
-    );
-  }
-}
+  return (
+    <form onSubmit={onSubmit}>
+      <Input placeholder="Type to search..." onChange={debouncedSearch} />
+    </form>
+  );
+};
+export default Search;
