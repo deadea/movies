@@ -1,6 +1,7 @@
 .card-list {
   margin: 0;
   padding: 36px;
+  padding-bottom: 0;
   list-style: none;
   display: flex;
   flex-direction: row;
@@ -17,6 +18,7 @@
 @media (max-width: 420px) {
   .card-list {
     padding: 17px;
+    padding-bottom: 0;
     flex-direction: column;
     flex-wrap: nowrap;
   }

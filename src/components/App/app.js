@@ -4,6 +4,7 @@ import CardList from '../CardList';
 import Spinner from '../Spinner';
 import PageTabs from '../PageTabs';
 import Search from '../Search';
+import Footer from '../Footer';
 import ErrorMessage from '../ErrorMessage';
 import ApiService from '../../service/ApiService';
 import NoConnection from '../../service/NoConnection';
@@ -52,6 +53,7 @@ export default class App extends React.Component {
     this.setState({
       query: newQuery,
       loading: true,
+      error: false,
     });
   };
 
@@ -71,6 +73,7 @@ export default class App extends React.Component {
             {spinner}
             {content}
           </NoConnection>
+          <Footer />
         </div>
       </>
     );

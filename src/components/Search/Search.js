@@ -9,7 +9,6 @@ const Search = ({ updateQuery }) => {
     if (e.target.value !== '') {
       setSearchTerm(e.target.value);
       updateQuery(e.target.value);
-      console.log('handleChange', e.target.value);
     }
   };
   const debouncedSearch = debounce(handleChange, 700);
