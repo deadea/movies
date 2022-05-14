@@ -19,19 +19,22 @@ export default class App extends React.Component {
     error: false,
     errObject: {},
     query: 'return',
+    page: 1,
+    totalResults: 0,
   };
   componentDidMount() {
-    this.getData(this.state.query);
+    this.getData(this.state.query, this.state.page);
   }
   componentDidUpdate(prevProps, prevState) {
-    if (this.state.query !== prevState.query) {
-      this.getData(this.state.query);
+    if (this.state.query !== prevState.query || this.state.page !== prevState.page) {
+      this.getData(this.state.query, this.state.page);
     }
   }
-  onDataLoaded(data) {
+  onDataLoaded({ results, total_results }) {
     this.setState({
-      cards: data,
+      cards: results,
       loading: false,
+      totalResults: total_results,
     });
   }
   onError = (err) => {
@@ -41,9 +44,9 @@ export default class App extends React.Component {
       errObject: err,
     });
   };
-  getData(query) {
+  getData(query, page) {
     this.apiService
-      .getAllMovies(query)
+      .getAllMovies(query, page)
       .then((result) => {
         this.onDataLoaded(result);
       })
@@ -54,15 +57,22 @@ export default class App extends React.Component {
       query: newQuery,
       loading: true,
       error: false,
+      page: 1,
+    });
+  };
+  updatePage = (newpage) => {
+    this.setState({
+      page: newpage,
     });
   };
 
   render() {
-    const { cards, loading, error, errObject } = this.state;
+    const { cards, loading, error, errObject, page, totalResults } = this.state;
     const hasData = !(loading || error);
     const errorMessage = error ? <ErrorMessage errObject={errObject} /> : null;
     const spinner = loading ? <Spinner /> : null;
     const content = hasData ? <CardList cards={cards} /> : null;
+
     return (
       <>
         <div className="wrapper">
@@ -73,7 +83,7 @@ export default class App extends React.Component {
             {spinner}
             {content}
           </NoConnection>
-          <Footer />
+          <Footer page={page} totalResults={totalResults} updatePage={this.updatePage} />
         </div>
       </>
     );
