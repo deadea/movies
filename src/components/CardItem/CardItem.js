@@ -21,7 +21,7 @@ export default class CardItem extends React.Component {
     }
   }
   getPoster() {
-    let url = `https://image.tmdb.org/t/p/w500${this.props.poster_path}`;
+    let url = `https://image.tmdb.org/t/p/w200${this.props.poster_path}`;
     if (!this.props.poster_path) {
       url = icon;
     }
