@@ -3,11 +3,12 @@ import React from 'react';
 import CardList from '../CardList';
 import Spinner from '../Spinner';
 import PageTabs from '../PageTabs';
-import Search from '../Search';
+import Pages from '../Pages';
+//import Search from '../Search';
 import Footer from '../Footer';
 import ErrorMessage from '../ErrorMessage';
 import ApiService from '../../service/ApiService';
-import NoConnection from '../../service/NoConnection';
+//import NoConnection from '../../service/NoConnection';
 
 import './app.css';
 
@@ -21,6 +22,7 @@ export default class App extends React.Component {
     query: 'return',
     page: 1,
     totalResults: 0,
+    activeTabKey: 1,
   };
   componentDidMount() {
     this.getData(this.state.query, this.state.page);
@@ -65,27 +67,32 @@ export default class App extends React.Component {
       page: newpage,
     });
   };
+  changeTab = (tabKey) => {
+    this.setState({
+      activeTabKey: tabKey,
+    });
+  };
 
   render() {
-    const { cards, loading, error, errObject, page, totalResults } = this.state;
+    const { cards, loading, error, errObject, page, totalResults, activeTabKey } = this.state;
     const hasData = !(loading || error);
     const errorMessage = error ? <ErrorMessage errObject={errObject} /> : null;
     const spinner = loading ? <Spinner /> : null;
     const content = hasData ? <CardList cards={cards} /> : null;
 
     return (
-      <>
-        <div className="wrapper">
-          <PageTabs />
-          <Search updateQuery={this.updateQuery} />
-          <NoConnection>
-            {errorMessage}
-            {spinner}
-            {content}
-          </NoConnection>
-          <Footer page={page} totalResults={totalResults} updatePage={this.updatePage} />
-        </div>
-      </>
+      <div className="wrapper">
+        <PageTabs changeTab={this.changeTab} />
+        <Pages
+          activeTabKey={activeTabKey}
+          updateQuery={this.updateQuery}
+          errorMessage={errorMessage}
+          spinner={spinner}
+          content={content}
+        />
+
+        <Footer page={page} totalResults={totalResults} updatePage={this.updatePage} />
+      </div>
     );
   }
 }
