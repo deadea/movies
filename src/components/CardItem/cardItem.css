@@ -43,9 +43,10 @@
   font-size: 20px;
   line-height: 28px;
   display: block;
+  padding-right: 18px;
 }
 .card-item--title.long {
-  font-size: 18px;
+  font-size: 17px;
   line-height: 26px;
 }
 .card-item--date {
@@ -79,6 +80,24 @@ p.card-item--description {
   margin-bottom: 10px;
 }
 
+.rating-outer {
+  position: absolute;
+  top: 12px;
+  right: 9px;
+  border-radius: 50%;
+  display: inline-block;
+  width: 30px;
+  height: 30px;
+  text-align: center;
+  border: 3px solid;
+}
+
+.rating-inner {
+  background-color: white;
+  border-radius: 50%;
+  display: block;
+}
+
 @media (min-width: 420px) and (max-width: 767px) {
   .card-item {
     padding: 6px 10px;
@@ -86,9 +105,15 @@ p.card-item--description {
     max-height: 245px;
     margin-bottom: 20px;
   }
+  .rating-outer {
+    top: 5px;
+    right: 7px;
+  }
   .card-item--title.long {
-    font-size: 12px;
+    font-size: 14px;
     line-height: 23px;
+    width: 95%;
+    padding-right: 0;
   }
   .card-item > img {
     display: none;
@@ -116,5 +141,6 @@ p.card-item--description {
   }
   .ant-rate {
     align-self: flex-end;
+    margin-bottom: 0;
   }
 }

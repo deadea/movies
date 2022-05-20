@@ -2,11 +2,11 @@ import CardItem from '../CardItem';
 
 import './cardList.css';
 
-const CardList = ({ cards }) => {
-  const elements = cards.map((item) => {
+const CardList = ({ movies, rated, rateMovie }) => {
+  const elements = movies.map((item) => {
     const { id, ...itemprops } = item;
 
-    return <CardItem key={id} {...itemprops} />;
+    return <CardItem key={id} id={id} rated={rated} rateMovie={rateMovie} {...itemprops} />;
   });
 
   return <ul className="card-list">{elements}</ul>;

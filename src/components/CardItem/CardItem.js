@@ -4,12 +4,20 @@ import { Button } from 'antd';
 // eslint-disable-next-line
 import { Rate } from 'antd';
 import './cardItem.css';
+
 import { format } from 'date-fns';
 import classNames from 'classnames';
 
+import { COLORS } from './cardRatingColor';
 import icon from './no-image.png';
 
 export default class CardItem extends React.Component {
+  componentDidUpdate(prevProps, prevState) {
+    if (this.props.rated !== prevProps.rated) {
+      this.getRating();
+    }
+  }
+
   formatDate() {
     try {
       const date = format(new Date(this.props.release_date), 'MMMM dd, yyyy');
@@ -37,9 +45,32 @@ export default class CardItem extends React.Component {
       return `${sliced} ...`;
     } else return text;
   }
+
+  getColor() {
+    if (this.props.vote_average <= 3) {
+      return COLORS.AWFUL;
+    } else if (this.props.vote_average <= 5) {
+      return COLORS.BAD;
+    } else if (this.props.vote_average <= 7) {
+      return COLORS.AVERAGE;
+    } else {
+      return COLORS.GOOD;
+    }
+  }
+  getRating = () => {
+    const idx = this.props.rated.findIndex((el) => el.id === this.props.id);
+    if (idx < 0) {
+      return null;
+    } else return this.props.rated[idx].rating;
+  };
+  sendRating = (value) => {
+    this.props.rateMovie(this.props.id, value);
+  };
+
   render() {
-    const { original_title: title, overview } = this.props;
+    const { original_title: title, overview, vote_average } = this.props;
     const titleClassName = classNames('card-item--title', { long: title.length > 30 });
+
     return (
       <li className="card-item">
         <img src={this.getPoster()} alt={'movie poster'}></img>
@@ -48,6 +79,9 @@ export default class CardItem extends React.Component {
             <img src={this.getPoster()} alt={'movie poster'}></img>
             <div>
               <span className={titleClassName}>{title}</span>
+              <div className="rating-outer" style={{ borderColor: this.getColor() }}>
+                <span className="rating-inner">{vote_average}</span>
+              </div>
               <span className="card-item--date">{this.formatDate()}</span>
               <div className="card-item--genres">
                 <Button size="small">Action</Button>
@@ -56,7 +90,7 @@ export default class CardItem extends React.Component {
             </div>
             <p className="card-item--description">{this.textSlice(overview)}</p>
           </div>
-          <Rate defaultValue={this.props.vote_average} count="10" />
+          <Rate allowHalf defaultValue={0} value={this.getRating()} count="10" onChange={this.sendRating} />
         </div>
       </li>
     );

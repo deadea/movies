@@ -21,4 +21,44 @@ export default class ApiService {
     const res = await this.getResource(query, page);
     return res;
   }
+
+  async getGuestSessionId() {
+    const res = await fetch(`https://api.themoviedb.org/3/authentication/guest_session/new?api_key=${this._apiKey}`);
+    if (!res.ok) {
+      throw new Error(res.status);
+    }
+    const result = await res.json();
+    if (result.success) {
+      return result.guest_session_id;
+    } else {
+      throw new Error('401');
+    }
+  }
+
+  async getGuestRated(sessionId, page) {
+    const res = await fetch(
+      `https://api.themoviedb.org/3/guest_session/${sessionId}/rated/movies?api_key=${this._apiKey}&language=en-US&page=${page}&sort_by=created_at.asc`
+    );
+    if (!res.ok) {
+      throw new Error(res.status);
+    }
+    const result = await res.json();
+    return result;
+  }
+
+  async rateMovie(movieId, sessionId, rating) {
+    const res = await fetch(
+      `https://api.themoviedb.org/3/movie/${movieId}/rating?api_key=${this._apiKey}&guest_session_id=${sessionId}`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ value: rating }),
+      }
+    );
+    if (!res.ok) {
+      throw new Error(res.status);
+    }
+    const result = await res.json();
+    return result;
+  }
 }
