@@ -6,7 +6,7 @@ const ErrorMessage = ({ errObject, alertClosed }) => {
   if (errObject.message === '404') {
     text = 'The resource you requested could not be found';
   } else if (errObject.message === '401') {
-    text = 'Not possible to create session at the moment';
+    text = 'Need a valid session to do that';
   } else {
     text = 'Something went wrong, please try later';
   }

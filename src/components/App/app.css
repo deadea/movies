@@ -19,6 +19,11 @@ body {
   height: 100vh;
 }
 
+.ant-btn-round {
+  background-color: #ffffff;
+  background-image: linear-gradient(315deg, #ffffff 0%, #d7e1ec 74%);
+}
+
 @media (max-width: 420px) {
   .wrapper {
     max-width: 420px;

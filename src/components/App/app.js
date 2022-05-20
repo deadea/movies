@@ -1,4 +1,5 @@
 import React from 'react';
+import { Button } from 'antd';
 
 import CardList from '../CardList';
 import Spinner from '../Spinner';
@@ -152,7 +153,13 @@ export default class App extends React.Component {
       );
     const content = hasData ? tabContent : null;
     const search = activeTabKey === 1 ? <Search updateQuery={this.updateQuery} /> : null;
-    const sessionBtn = sessionId === null ? <button onClick={this.createSession}>Create guest session</button> : null;
+    const sessionBtn =
+      sessionId === null ? (
+        <Button type="default" shape="round" onClick={this.createSession}>
+          Create guest session to rate movies
+        </Button>
+      ) : null;
+
     const footer =
       activeTabKey === 1 ? (
         <Footer page={page} totalResults={totalResults} updatePage={this.updatePage} />
