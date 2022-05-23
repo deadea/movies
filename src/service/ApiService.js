@@ -23,6 +23,7 @@ export default class ApiService {
   }
 
   async getGuestSessionId() {
+    console.log('getGuestSessionId');
     const res = await fetch(`https://api.themoviedb.org/3/authentication/guest_session/new?api_key=${this._apiKey}`);
     if (!res.ok) {
       throw new Error(res.status);
