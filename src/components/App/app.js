@@ -1,5 +1,4 @@
 import React from 'react';
-import { Button } from 'antd';
 
 import CardList from '../CardList';
 import Spinner from '../Spinner';
@@ -9,6 +8,7 @@ import Footer from '../Footer';
 import ErrorMessage from '../ErrorMessage';
 import ApiService from '../../service/ApiService';
 import NoConnection from '../../service/NoConnection';
+import { Provider } from '../../service-context/service-context';
 
 import './app.css';
 
@@ -17,6 +17,7 @@ export default class App extends React.Component {
   state = {
     movies: [],
     rated: [],
+    genres: [],
     loading: true,
     error: false,
     errObject: {},
@@ -29,6 +30,10 @@ export default class App extends React.Component {
     sessionId: JSON.parse(localStorage.getItem('guest_session_id')) || null,
   };
   componentDidMount() {
+    this.getGenres();
+    if (JSON.parse(localStorage.getItem('guest_session_id')) === null) {
+      this.createSession();
+    }
     this.getData(this.state.query, this.state.page);
     if (this.state.sessionId !== null) {
       this.getRated();
@@ -51,6 +56,7 @@ export default class App extends React.Component {
       loading: false,
       totalResults: result.total_results,
     });
+    window.scrollTo(0, 0);
   }
 
   onError = (err) => {
@@ -108,7 +114,7 @@ export default class App extends React.Component {
 
   rateMovie = (movie, stars) => {
     this.apiService
-      .rateMovie(movie, this.state.sessionId, stars) //ID ИЗ LOCALSTORAGE
+      .rateMovie(movie, this.state.sessionId, stars)
       .then(() => {
         this.timeoutId = setTimeout(this.getRated, 1000);
       })
@@ -121,17 +127,25 @@ export default class App extends React.Component {
       .then((result) => {
         this.setState({
           rated: result.results,
-          //loading: false,
           totalResultsRated: result.total_results,
         });
       })
       .catch(this.onError);
   };
 
+  getGenres = () => {
+    this.apiService.getGenres().then((result) => {
+      this.setState({
+        genres: result,
+      });
+    });
+  };
+
   render() {
     const {
       movies,
       rated,
+      genres,
       loading,
       error,
       errObject,
@@ -140,11 +154,11 @@ export default class App extends React.Component {
       totalResults,
       totalResultsRated,
       activeTabKey,
-      sessionId,
     } = this.state;
     const hasData = !(loading || error);
     const errorMessage = error ? <ErrorMessage errObject={errObject} alertClosed={this.alertClosed} /> : null;
     const spinner = loading ? <Spinner /> : null;
+
     const tabContent =
       activeTabKey === 1 ? (
         <CardList movies={movies} rated={rated} rateMovie={this.rateMovie} />
@@ -153,12 +167,6 @@ export default class App extends React.Component {
       );
     const content = hasData ? tabContent : null;
     const search = activeTabKey === 1 ? <Search updateQuery={this.updateQuery} /> : null;
-    const sessionBtn =
-      sessionId === null ? (
-        <Button type="default" shape="round" onClick={this.createSession}>
-          Create guest session to rate movies
-        </Button>
-      ) : null;
 
     const footer =
       activeTabKey === 1 ? (
@@ -168,17 +176,18 @@ export default class App extends React.Component {
       );
 
     return (
-      <div className="wrapper">
-        {sessionBtn}
-        <PageTabs changeTab={this.changeTab} />
-        {search}
-        <NoConnection>
-          {errorMessage}
-          {spinner}
-          {content}
-        </NoConnection>
-        {footer}
-      </div>
+      <Provider value={genres}>
+        <div className="wrapper">
+          <PageTabs changeTab={this.changeTab} />
+          {search}
+          <NoConnection>
+            {errorMessage}
+            {spinner}
+            {content}
+          </NoConnection>
+          {footer}
+        </div>
+      </Provider>
     );
   }
 }

@@ -1,12 +1,11 @@
-import React from 'react';
-// eslint-disable-next-line
-import { Button } from 'antd';
-// eslint-disable-next-line
-import { Rate } from 'antd';
 import './cardItem.css';
-
+import React from 'react';
+import { Rate } from 'antd';
 import { format } from 'date-fns';
 import classNames from 'classnames';
+
+import { Consumer } from '../../service-context/service-context';
+import GenresList from '../GenresList';
 
 import { COLORS } from './cardRatingColor';
 import icon from './no-image.png';
@@ -36,8 +35,8 @@ export default class CardItem extends React.Component {
     return url;
   }
   textSlice(text) {
-    if (text.length > 205) {
-      let sliced = text.substring(0, 205);
+    if (text.length > 170) {
+      let sliced = text.substring(0, 170);
       sliced = sliced.substring(0, Math.min(sliced.length, sliced.lastIndexOf(' ')));
       if (sliced[sliced.length - 1] === ',') {
         sliced = sliced.substring(0, sliced.length - 1);
@@ -68,7 +67,7 @@ export default class CardItem extends React.Component {
   };
 
   render() {
-    const { original_title: title, overview, vote_average } = this.props;
+    const { original_title: title, overview, vote_average, genre_ids } = this.props;
     const titleClassName = classNames('card-item--title', { long: title.length > 30 });
 
     return (
@@ -77,16 +76,17 @@ export default class CardItem extends React.Component {
         <div className="card-item--container">
           <div className="card-item--wrapper">
             <img src={this.getPoster()} alt={'movie poster'}></img>
-            <div>
+            <div className="card-item--header">
               <span className={titleClassName}>{title}</span>
               <div className="rating-outer" style={{ borderColor: this.getColor() }}>
                 <span className="rating-inner">{vote_average}</span>
               </div>
               <span className="card-item--date">{this.formatDate()}</span>
-              <div className="card-item--genres">
-                <Button size="small">Action</Button>
-                <Button size="small">Drama</Button>
-              </div>
+              <Consumer>
+                {({ genres }) => {
+                  return <GenresList genre_ids={genre_ids} genres={genres} />;
+                }}
+              </Consumer>
             </div>
             <p className="card-item--description">{this.textSlice(overview)}</p>
           </div>

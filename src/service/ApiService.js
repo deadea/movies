@@ -23,7 +23,6 @@ export default class ApiService {
   }
 
   async getGuestSessionId() {
-    console.log('getGuestSessionId');
     const res = await fetch(`https://api.themoviedb.org/3/authentication/guest_session/new?api_key=${this._apiKey}`);
     if (!res.ok) {
       throw new Error(res.status);
@@ -56,6 +55,15 @@ export default class ApiService {
         body: JSON.stringify({ value: rating }),
       }
     );
+    if (!res.ok) {
+      throw new Error(res.status);
+    }
+    const result = await res.json();
+    return result;
+  }
+
+  async getGenres() {
+    const res = await fetch(`https://api.themoviedb.org/3/genre/movie/list?api_key=${this._apiKey}&language=en-US`);
     if (!res.ok) {
       throw new Error(res.status);
     }
