@@ -1,5 +1,6 @@
-import CardItem from '../CardItem';
+import PropTypes from 'prop-types';
 
+import CardItem from '../CardItem';
 import './cardList.css';
 
 const CardList = ({ movies, rated, rateMovie }) => {
@@ -13,3 +14,15 @@ const CardList = ({ movies, rated, rateMovie }) => {
 };
 
 export default CardList;
+
+CardList.defaultProps = {
+  movies: [{}],
+  rated: [{}],
+  rateMovie: () => {},
+};
+
+CardList.propTypes = {
+  movies: PropTypes.arrayOf(PropTypes.object),
+  rated: PropTypes.arrayOf(PropTypes.object),
+  rateMovie: PropTypes.func,
+};

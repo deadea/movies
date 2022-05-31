@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import { Alert } from 'antd';
 import './errorMessage.css';
 
@@ -19,3 +20,13 @@ const ErrorMessage = ({ errObject, alertClosed }) => {
 };
 
 export default ErrorMessage;
+
+ErrorMessage.defaultProps = {
+  errObject: {},
+  alertClosed: () => {},
+};
+
+ErrorMessage.propTypes = {
+  errObject: PropTypes.object,
+  alertClosed: PropTypes.func,
+};

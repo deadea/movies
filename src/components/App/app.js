@@ -155,25 +155,20 @@ export default class App extends React.Component {
       totalResultsRated,
       activeTabKey,
     } = this.state;
+
+    let tabContent = <CardList movies={movies} rated={rated} rateMovie={this.rateMovie} />;
+    let search = <Search updateQuery={this.updateQuery} />;
+    let footer = <Footer page={page} totalResults={totalResults} updatePage={this.updatePage} />;
+    if (activeTabKey === 2) {
+      tabContent = <CardList movies={rated} rated={rated} rateMovie={this.rateMovie} />;
+      search = null;
+      footer = <Footer page={pageRated} totalResults={totalResultsRated} updatePage={this.updatePageRated} />;
+    }
+
     const hasData = !(loading || error);
+    const content = hasData ? tabContent : null;
     const errorMessage = error ? <ErrorMessage errObject={errObject} alertClosed={this.alertClosed} /> : null;
     const spinner = loading ? <Spinner /> : null;
-
-    const tabContent =
-      activeTabKey === 1 ? (
-        <CardList movies={movies} rated={rated} rateMovie={this.rateMovie} />
-      ) : (
-        <CardList movies={rated} rated={rated} rateMovie={this.rateMovie} />
-      );
-    const content = hasData ? tabContent : null;
-    const search = activeTabKey === 1 ? <Search updateQuery={this.updateQuery} /> : null;
-
-    const footer =
-      activeTabKey === 1 ? (
-        <Footer page={page} totalResults={totalResults} updatePage={this.updatePage} />
-      ) : (
-        <Footer page={pageRated} totalResults={totalResultsRated} updatePage={this.updatePageRated} />
-      );
 
     return (
       <Provider value={genres}>

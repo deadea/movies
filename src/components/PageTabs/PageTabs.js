@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import { Tabs } from 'antd';
 import './pageTabs.css';
 
@@ -16,3 +17,11 @@ const PageTabs = ({ changeTab }) => {
 };
 
 export default PageTabs;
+
+PageTabs.defaultProps = {
+  changeTab: () => {},
+};
+
+PageTabs.propTypes = {
+  changeTab: PropTypes.func,
+};

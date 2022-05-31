@@ -1,7 +1,11 @@
 .card-item--genres > .ant-btn {
-margin-top: 4px;
-margin-right: 4px;
-font-size: 12px;
-cursor: default;
-color: black;
+  margin-top: 4px;
+  margin-right: 4px;
+  font-size: 12px;
+  cursor: default;
+}
+.ant-btn.ant-btn-background-ghost[disabled] {
+color: rgba(0, 0, 0, 0.7);
+border-color: #D9D9D9;
+background-color: #FAFAFA;
 }

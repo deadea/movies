@@ -1,10 +1,10 @@
 export default class ApiService {
-  _apiBase = 'https://api.themoviedb.org/3/search/movie';
+  _apiBase = 'https://api.themoviedb.org/3/';
   _apiKey = '1aadd64706947cf630258d25324b3a9a';
 
   async getResource(query, page) {
     const res = await fetch(
-      `${this._apiBase}?api_key=${this._apiKey}&language=en-US&query=${query}&page=${page}&include_adult=false&region=US`
+      `${this._apiBase}search/movie?api_key=${this._apiKey}&language=en-US&query=${query}&page=${page}&include_adult=false&region=US`
     );
 
     if (!res.ok) {
@@ -23,7 +23,7 @@ export default class ApiService {
   }
 
   async getGuestSessionId() {
-    const res = await fetch(`https://api.themoviedb.org/3/authentication/guest_session/new?api_key=${this._apiKey}`);
+    const res = await fetch(`${this._apiBase}authentication/guest_session/new?api_key=${this._apiKey}`);
     if (!res.ok) {
       throw new Error(res.status);
     }
@@ -37,7 +37,7 @@ export default class ApiService {
 
   async getGuestRated(sessionId, page) {
     const res = await fetch(
-      `https://api.themoviedb.org/3/guest_session/${sessionId}/rated/movies?api_key=${this._apiKey}&language=en-US&page=${page}&sort_by=created_at.asc`
+      `${this._apiBase}guest_session/${sessionId}/rated/movies?api_key=${this._apiKey}&language=en-US&page=${page}&sort_by=created_at.asc`
     );
     if (!res.ok) {
       throw new Error(res.status);
@@ -48,7 +48,7 @@ export default class ApiService {
 
   async rateMovie(movieId, sessionId, rating) {
     const res = await fetch(
-      `https://api.themoviedb.org/3/movie/${movieId}/rating?api_key=${this._apiKey}&guest_session_id=${sessionId}`,
+      `${this._apiBase}movie/${movieId}/rating?api_key=${this._apiKey}&guest_session_id=${sessionId}`,
       {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -63,7 +63,7 @@ export default class ApiService {
   }
 
   async getGenres() {
-    const res = await fetch(`https://api.themoviedb.org/3/genre/movie/list?api_key=${this._apiKey}&language=en-US`);
+    const res = await fetch(`${this._apiBase}genre/movie/list?api_key=${this._apiKey}&language=en-US`);
     if (!res.ok) {
       throw new Error(res.status);
     }

@@ -1,5 +1,6 @@
 import './cardItem.css';
 import React from 'react';
+import PropTypes from 'prop-types';
 import { Rate } from 'antd';
 import { format } from 'date-fns';
 import classNames from 'classnames';
@@ -11,6 +12,14 @@ import { COLORS } from './cardRatingColor';
 import icon from './no-image.png';
 
 export default class CardItem extends React.Component {
+  static defaultProps = {
+    rateMovie: () => {},
+  };
+
+  static propTypes = {
+    rateMovie: PropTypes.func,
+  };
+
   componentDidUpdate(prevProps, prevState) {
     if (this.props.rated !== prevProps.rated) {
       this.getRating();
