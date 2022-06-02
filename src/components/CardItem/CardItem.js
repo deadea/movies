@@ -7,9 +7,10 @@ import classNames from 'classnames';
 
 import { Consumer } from '../../service-context/service-context';
 import GenresList from '../GenresList';
+import icon from '../../assets/no-image.png';
 
 import { COLORS } from './cardRatingColor';
-import icon from './no-image.png';
+import { MAX_LENGTH } from './cardMaxLength';
 
 export default class CardItem extends React.Component {
   static defaultProps = {
@@ -44,8 +45,8 @@ export default class CardItem extends React.Component {
     return url;
   }
   textSlice(text) {
-    if (text.length > 170) {
-      let sliced = text.substring(0, 170);
+    if (text.length > MAX_LENGTH) {
+      let sliced = text.substring(0, MAX_LENGTH);
       sliced = sliced.substring(0, Math.min(sliced.length, sliced.lastIndexOf(' ')));
       if (sliced[sliced.length - 1] === ',') {
         sliced = sliced.substring(0, sliced.length - 1);

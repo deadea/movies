@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import { Tabs } from 'antd';
-import './pageTabs.css';
+
+import { tabNames } from './tabNames';
 
 const { TabPane } = Tabs;
 
@@ -10,8 +11,8 @@ const PageTabs = ({ changeTab }) => {
   };
   return (
     <Tabs size="large" onChange={onTabClick}>
-      <TabPane tab="Search" key="1"></TabPane>
-      <TabPane tab="Rated" key="2"></TabPane>
+      <TabPane tab={tabNames[1]} key="1"></TabPane>
+      <TabPane tab={tabNames[2]} key="2"></TabPane>
     </Tabs>
   );
 };

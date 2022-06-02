@@ -6,14 +6,15 @@ import PageTabs from '../PageTabs';
 import Search from '../Search';
 import Footer from '../Footer';
 import ErrorMessage from '../ErrorMessage';
-import ApiService from '../../service/ApiService';
+import apiService from '../../service/ApiService';
 import NoConnection from '../../service/NoConnection';
 import { Provider } from '../../service-context/service-context';
+import storage from '../../service/storage';
 
 import './app.css';
+const dotenv = require('dotenv-expand');
 
 export default class App extends React.Component {
-  apiService = new ApiService();
   state = {
     movies: [],
     rated: [],
@@ -27,11 +28,11 @@ export default class App extends React.Component {
     totalResults: 0,
     totalResultsRated: 0,
     activeTabKey: 1,
-    sessionId: JSON.parse(localStorage.getItem('guest_session_id')) || null,
+    sessionId: JSON.parse(storage.getFromStorage('guest_session_id')) || null,
   };
   componentDidMount() {
     this.getGenres();
-    if (JSON.parse(localStorage.getItem('guest_session_id')) === null) {
+    if (JSON.parse(storage.getFromStorage('guest_session_id')) === null) {
       this.createSession();
     }
     this.getData(this.state.query, this.state.page);
@@ -70,9 +71,12 @@ export default class App extends React.Component {
     this.setState({ error: false });
   };
   getData(query, page) {
-    this.apiService
+    apiService
       .getAllMovies(query, page)
       .then((result) => {
+        if (result.total_results === 0) {
+          throw new Error('404');
+        }
         this.onDataLoaded(result);
       })
       .catch(this.onError);
@@ -98,31 +102,40 @@ export default class App extends React.Component {
   changeTab = (tabKey) => {
     this.setState({
       activeTabKey: tabKey,
+      error: false,
     });
   };
   createSession = () => {
-    this.apiService
+    apiService
       .getGuestSessionId()
       .then((result) => {
-        localStorage.setItem('guest_session_id', JSON.stringify(result));
-        this.setState({
-          sessionId: result,
-        });
+        if (result.success) {
+          storage.setToStorage('guest_session_id', JSON.stringify(result.guest_session_id));
+          this.setState({
+            sessionId: result.guest_session_id,
+          });
+        } else {
+          throw new Error('401');
+        }
       })
       .catch(this.onError);
   };
 
   rateMovie = (movie, stars) => {
-    this.apiService
+    apiService
       .rateMovie(movie, this.state.sessionId, stars)
-      .then(() => {
-        this.timeoutId = setTimeout(this.getRated, 1000);
+      .then((result) => {
+        if (result.success) {
+          this.timeoutId = setTimeout(this.getRated, 1000);
+        } else {
+          throw new Error('401');
+        }
       })
       .catch(this.onError);
   };
 
   getRated = () => {
-    this.apiService
+    apiService
       .getGuestRated(this.state.sessionId, this.state.pageRated)
       .then((result) => {
         this.setState({
@@ -134,11 +147,18 @@ export default class App extends React.Component {
   };
 
   getGenres = () => {
-    this.apiService.getGenres().then((result) => {
-      this.setState({
-        genres: result,
-      });
-    });
+    apiService
+      .getGenres()
+      .then((result) => {
+        if (!result.success) {
+          this.setState({
+            genres: result,
+          });
+        } else {
+          throw new Error('404');
+        }
+      })
+      .catch(this.onError);
   };
 
   render() {
@@ -159,7 +179,8 @@ export default class App extends React.Component {
     let tabContent = <CardList movies={movies} rated={rated} rateMovie={this.rateMovie} />;
     let search = <Search updateQuery={this.updateQuery} />;
     let footer = <Footer page={page} totalResults={totalResults} updatePage={this.updatePage} />;
-    if (activeTabKey === 2) {
+    const tabs = { 1: 'Search', 2: 'Rated' };
+    if (tabs[activeTabKey] === 'Rated') {
       tabContent = <CardList movies={rated} rated={rated} rateMovie={this.rateMovie} />;
       search = null;
       footer = <Footer page={pageRated} totalResults={totalResultsRated} updatePage={this.updatePageRated} />;
@@ -168,7 +189,7 @@ export default class App extends React.Component {
     const hasData = !(loading || error);
     const content = hasData ? tabContent : null;
     const errorMessage = error ? <ErrorMessage errObject={errObject} alertClosed={this.alertClosed} /> : null;
-    const spinner = loading ? <Spinner /> : null;
+    const spinner = loading && <Spinner />;
 
     return (
       <Provider value={genres}>
